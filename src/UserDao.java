@@ -67,36 +67,96 @@ public class UserDao {
         return rowInserted;
     }
     
-    public User loginUser(User user) throws SQLException {
-        User userResult=null;
+    public Boolean validateUser(User user) throws SQLException {
+    	ResultSet rs=null;
+    	Boolean hasTuple=false;
         String sql = "SELECT * FROM users WHERE username=? and password=?";
-       
-        System.out.println("Sql script");
+        
+        System.out.println("validateUser sql :" +sql);
         connect();
         
         PreparedStatement statement = jdbcConnection.prepareStatement(sql);
         statement.setString(1, user.getUsername());
         statement.setString(2, user.getPassword());
         
+        if(user.getUsername()!=null&&user.getPassword()!=null) {
+           rs = statement.executeQuery();
+           if(rs.next()) {
+        	   hasTuple=true;
+           }
+        }
+        
+        System.out.println("valid user and password "+hasTuple);
+        
+        statement.close();
+         
+        return hasTuple;
+    }
+    
+    public boolean InitializeDB() throws SQLException {
+        boolean hasTuples=false;
+        String sql1 = "DROP TABLE if exists users";
+        String sql2="CREATE TABLE users (\r\n" + 
+        		"Username varchar(30) NOT NULL,\r\n" + 
+        		"Password varchar(30) NOT NULL,\r\n" + 
+        		"FirstName varchar(30) NOT NULL,\r\n" + 
+        		"LastName varchar(30) NOT NULL,\r\n" + 
+        		"Age int(3) NOT NULL,\r\n" + 
+        		"primary key (Username)\r\n" + 
+        		")";
+        String sql3="INSERT INTO users(Username, Password, FirstName, LastName, Age)\r\n" + 
+        		"VALUES (\"root\", \"pass1234\", \"Leo\", \"Wang\", 30),(\"leo.wang@gmail.com\", \"12345\", \"Leo\", \"Wang\", 30),\r\n" + 
+        		"(\"Wentao.Bi@gmail.com\", \"123456\", \"Wentao\", \"Bi\", 27),(\"Peter.Zhang@gmail.com\", \"123456\", \"Peter\", \"Zhang\", 56),\r\n" + 
+        		"(\"Jason.Zhang@gmail.com\", \"123456\", \"Jason\", \"Zhang\", 32),(\"Hill.Zhang@gmail.com\", \"123456\", \"Hill\", \"Zhang\", 28),\r\n" + 
+        		"(\"Adam.Cheng@gmail.com\", \"123456\", \"Adam\", \"Cheng\", 33),(\"Wei.Qi@gmail.com\", \"123456\", \"Wei\", \"Qian\", 24),\r\n" + 
+        		"(\"Zeyue.Lin@gmail.com\", \"123456\", \"Zeyue\", \"Lin\", 23),(\"Kaiyue.Zhou@gmail.com\", \"123456\", \"Kaiyue\", \"Zhou\", 33)"; 
+        String sql4="SELECT * FROM users";
        
+     
+        System.out.println("Sql 1 is "+sql1);
+        System.out.println("Sql 2 is "+sql2);
+        System.out.println("Sql 3 is "+sql3);
+        System.out.println("Sql 4 is "+sql4);
+        
+        connect();
+        
+        Statement statement = jdbcConnection.createStatement();
+        
+        statement.executeUpdate(sql1);
+        statement.executeUpdate(sql2);
+        hasTuples=statement.executeUpdate(sql3)>0;
+       
+        System.out.println("There are tuples in users table: "+hasTuples);
+        
+        statement.close();
+        disconnect();
+        return hasTuples;
+        }
+    
+	public User getUser(String username, String password) throws SQLException {
+		String sql="select * from users where username=? and password=?";
+		User user=null;
+		connect();
+        
+        PreparedStatement statement = jdbcConnection.prepareStatement(sql);
+        statement.setString(1, username);
+        statement.setString(2, password);
+         
         ResultSet resultSet = statement.executeQuery();
-        
-        System.out.println("Execute successfully");
-        
+         
         if (resultSet.next()) {
-            String username = resultSet.getString("Username");
-            String password = resultSet.getString("Password");
-           
-            userResult = new User(username, password);
-            System.out.println(userResult.username);
-            System.out.println(userResult.password);
+            String username1 = resultSet.getString("Username");
+            String password1 = resultSet.getString("Password");
+            String firstname = resultSet.getString("FirstName");
+            String lastname = resultSet.getString("LastName");
+            int age = resultSet.getInt("Age");
+            user = new User(username1,password1,firstname,lastname,age);
         }
          
         resultSet.close();
         statement.close();
          
-        return userResult;
-    }
-    
+        return user;
+	}
     
 }

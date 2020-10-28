@@ -6,8 +6,15 @@
 <head>
 <meta charset="ISO-8859-1">
 <title>Login</title>
+<style>
+.block{
+margin-left:30%; 
+width:150px;
+}
+</style>
 </head>
 <body>
+<div class="block">
     <form action="login" method="post">
         
        
@@ -43,7 +50,8 @@
                 </td>
             </tr>
         </table>
+        
         </form>
-
+</div>
 </body>
 </html>

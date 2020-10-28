@@ -10,6 +10,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import com.mysql.cj.Session;
  
 /**
  * ControllerServlet.java
@@ -19,8 +22,9 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class ControllerServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
+	
     private UserDao userDao;
- 
+    private HttpSession session=null;
     
     public void init() {
         String jdbcURL = getServletContext().getInitParameter("jdbcURL");
@@ -40,7 +44,7 @@ public class ControllerServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String action = request.getServletPath();
-        System.out.println("Action +" + action);
+        System.out.println("Action + " + action);
         try {
             switch (action) {
             case "/new":
@@ -51,8 +55,11 @@ public class ControllerServlet extends HttpServlet {
                 insertUser(request, response);
                 break;
             case "/login":
-            	loginUser(request, response);
-     
+            	validateUser(request, response);
+            	break;
+            case "/initializeDB":
+            	initializeDB(request, response);
+            	break;
             }
         } catch (SQLException ex) {
             throw new ServletException(ex);
@@ -60,10 +67,9 @@ public class ControllerServlet extends HttpServlet {
     }
 
 
-
-    private void showNewForm(HttpServletRequest request, HttpServletResponse response)
+	private void showNewForm(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-    	
+    	//In case of forward, redirect happens at server end and not visible to client.
         RequestDispatcher dispatcher = request.getRequestDispatcher("Registration.jsp");
         dispatcher.forward(request, response);
     }
@@ -78,18 +84,60 @@ public class ControllerServlet extends HttpServlet {
  
         User newUser = new User(username, password, firstName, lastName, age);
         userDao.insertUser(newUser);
-        response.sendRedirect("list");
+        response.sendRedirect("Registered.jsp");
     }
     
-    private void loginUser(HttpServletRequest request, HttpServletResponse response) 
-    		throws SQLException, IOException {
+    private void validateUser(HttpServletRequest request, HttpServletResponse response) 
+    		throws SQLException, IOException, ServletException {
+    	//response.setCharacterEncoding("utf-8");
     	String username = request.getParameter("username");
         String password = request.getParameter("password");
-        
+        System.out.println("username is "+username);
+        System.out.println("password is "+password);
         User newUser = new User(username, password);
-        userDao.loginUser(newUser);
-        response.sendRedirect("list");
+        if(userDao.validateUser(newUser))
+        	{
+        	System.out.println("the user exists in database");
+        	User user=userDao.getUser(username,password);
+        	System.out.println("input username is "+user.getUsername());
+        	session=request.getSession();
+        	session.setAttribute("loginUsername", user.getUsername());
+        	session.setAttribute("loginPassword", user.getPassword());
+        	System.out.println("logined username is "+session.getAttribute("loginUsername"));
+        	System.out.println("logined password is "+session.getAttribute("loginPassword"));
+        	session.setAttribute("loginFisrtName", user.getFirstname());
+        	session.setAttribute("loginLastName", user.getFirstname());
+        	session.setAttribute("loginage", user.getAge());
         	
+        	if(session.getAttribute("loginUsername")=="root") {
+//            	RequestDispatcher dispatcher = request.getRequestDispatcher("InitializeDB.jsp");
+//              dispatcher.forward(request, response);
+        		System.out.println("Redirect to InitializeDB.jsp");
+            	response.sendRedirect("InitializeDB.jsp");
+            	return;
+        	}
+        	else
+        	{
+        		System.out.println("Logined as a normal user successfully");
+            	response.sendRedirect("Logined.jsp");
+        	}
+     	       
+        	}
+        else {
+        	System.out.println("Invalid username and password, redirect to Login.jsp again");
+        	response.sendRedirect("Login.jsp");
+        	
+        	}
+        
 	}
+    
+    private void initializeDB(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException, ServletException {
+ 		boolean initialize=userDao.InitializeDB();
+ 		if(initialize) {
+ 			 RequestDispatcher dispatcher = request.getRequestDispatcher("Success.jsp");
+ 	        dispatcher.forward(request, response);
+ 		}
+ 		
+ 	}
  
 }
