@@ -113,10 +113,10 @@ public class UserDao {
         String sql4="SELECT * FROM users";
        
      
-        System.out.println("Sql 1 is "+sql1);
-        System.out.println("Sql 2 is "+sql2);
-        System.out.println("Sql 3 is "+sql3);
-        System.out.println("Sql 4 is "+sql4);
+//        System.out.println("Sql 1 is "+sql1);
+//        System.out.println("Sql 2 is "+sql2);
+//        System.out.println("Sql 3 is "+sql3);
+//        System.out.println("Sql 4 is "+sql4);
         
         connect();
         

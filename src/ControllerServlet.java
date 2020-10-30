@@ -104,33 +104,29 @@ public class ControllerServlet extends HttpServlet {
         	session.setAttribute("loginUsername", user.getUsername());
         	session.setAttribute("loginPassword", user.getPassword());
         	System.out.println("logined username is "+session.getAttribute("loginUsername"));
-        	System.out.println("logined password is "+session.getAttribute("loginPassword"));
+        	System.out.println("logined password is "+session.getAttribute("loginPassword")+"\n");
         	session.setAttribute("loginFisrtName", user.getFirstname());
         	session.setAttribute("loginLastName", user.getFirstname());
         	session.setAttribute("loginage", user.getAge());
-        	
-        	if(session.getAttribute("loginUsername")=="root") {
+        	        	
+        	if(session.getAttribute("loginUsername").equals("root")){
 //            	RequestDispatcher dispatcher = request.getRequestDispatcher("InitializeDB.jsp");
 //              dispatcher.forward(request, response);
         		System.out.println("Redirect to InitializeDB.jsp");
-            	response.sendRedirect("InitializeDB.jsp");
-            	return;
+            	response.sendRedirect("InitializeDB.jsp");            	         
         	}
-        	else
-        	{
+        	else {        	
         		System.out.println("Logined as a normal user successfully");
             	response.sendRedirect("Logined.jsp");
-        	}
-     	       
+        	}   
         	}
         else {
-        	System.out.println("Invalid username and password, redirect to Login.jsp again");
+        	System.out.println("Invalid username and password, redirect to Login.jsp again \n");
         	response.sendRedirect("Login.jsp");
-        	
         	}
-        
-	}
-    
+        	
+	
+    }  
     private void initializeDB(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException, ServletException {
  		boolean initialize=userDao.InitializeDB();
  		if(initialize) {
