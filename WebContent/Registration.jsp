@@ -8,12 +8,7 @@
 <body>
     <center>
         <h1>WSUDIY</h1>
-        <h2>
-            <a href="new">Register a user</a>
-            &nbsp;&nbsp;&nbsp;
-            <!-- <a href="list">List All Students</a> -->
-             
-        </h2>
+      
     </center>
     <div align="center">
         <c:if test="${student1 != null}">
@@ -83,6 +78,7 @@
             </tr>
         </table>
         </form>
+        <p style="font-size: 20px;">If you already have an account, login <a href="Login.jsp">here</a></p>
     </div>   
 </body>
 </html>

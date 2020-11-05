@@ -7,25 +7,22 @@
 <meta charset="ISO-8859-1">
 <title>DIY Video</title>
 <style>
-.block{
-margin:auto; 
-width:50%;
-}
+
 </style>
 </head>
 <body>
 <br>
-<div class="block">
+<div align="center">
     <form action="login" method="post">
         
        
         <table border="1" cellpadding="5">
             <caption>
-                <h2>
+                <h1>
                    
                         Login User
                    
-                </h2>
+                </h1>
             </caption>
                         
             <tr>
@@ -53,8 +50,9 @@ width:50%;
         </table>
         
         </form>
+        <p style="font-size:20px;">If you don't have an account, please click <a href="Registration.jsp">here</a></p>
 </div>
 <br>
- <center>If you don't have an account, please click <a href="Registration.jsp">here</a></center>
+
 </body>
 </html>

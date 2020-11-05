@@ -5,8 +5,16 @@
 <head>
 <meta charset="ISO-8859-1">
 <title>Initialize Database</title>
+<style>
+.block{
+  margin: auto;
+  width:20%;
+}
+</style>
 </head>
 <body>
-<a href="initializeDB"><button class="button button1">Initialize Database</button></a>
+<div   class="block">
+<a href="initializeDB"><button >Initialize Database</button></a>
+</div>
 </body>
 </html>

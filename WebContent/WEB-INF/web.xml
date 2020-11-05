@@ -4,7 +4,7 @@
     xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
         http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
     id="WebApp_ID" version="3.1">
-    <display-name>Student Management Web Application</display-name>
+    <display-name>DIY Video Web Application</display-name>
  
     <context-param>
         <param-name>jdbcURL</param-name>
@@ -18,7 +18,7 @@
  
     <context-param>
         <param-name>jdbcPassword</param-name>
-        <param-value>root1234</param-value>
+        <param-value>pass1234</param-value>
     </context-param>
  
     <servlet>

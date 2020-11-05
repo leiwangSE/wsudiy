@@ -12,13 +12,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.mysql.cj.Session;
+
  
 /**
  * ControllerServlet.java
  * This servlet acts as a page controller for the application, handling all
  * requests from the user.
- * @author 	Lei
+ * @author 	Lei and Mahzad
  */
 public class ControllerServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
@@ -116,6 +116,7 @@ public class ControllerServlet extends HttpServlet {
             	response.sendRedirect("InitializeDB.jsp");            	         
         	}
         	else {        	
+        		
         		System.out.println("Logined as a normal user successfully");
             	response.sendRedirect("Logined.jsp");
         	}   
