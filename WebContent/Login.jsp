@@ -5,15 +5,16 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<title>Login</title>
+<title>DIY Video</title>
 <style>
 .block{
-margin-left:30%; 
-width:150px;
+margin:auto; 
+width:50%;
 }
 </style>
 </head>
 <body>
+<br>
 <div class="block">
     <form action="login" method="post">
         
@@ -46,12 +47,14 @@ width:150px;
             
             <tr>
                 <td colspan="2" align="center">
-                    <input type="submit" value="Save" />
+                    <input type="submit" value="Submit" />
                 </td>
             </tr>
         </table>
         
         </form>
 </div>
+<br>
+ <center>If you don't have an account, please click <a href="Registration.jsp">here</a></center>
 </body>
 </html>
