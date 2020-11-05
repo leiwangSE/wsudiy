@@ -1,4 +1,4 @@
-Project: Implement the design of a database for a web site of youtube videos (say WSUDIY.com) that teach people how to do things by yourself, such as house renovation. 
+Project: Implement the design of a database for a web site of youtube videos (say DIYVideo.com) that teach people how to do things by yourself, such as house renovation. 
 Group members: Lei Wang and Mahzad Tafvizi
 
 Instructions of how to install, configure:
