@@ -24,6 +24,8 @@ public class ControllerServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 	
     private UserDao userDao;
+    private QuestionDao questionDao;
+    private VideoDao videoDao;
     private HttpSession session=null;
     
     public void init() {
@@ -32,7 +34,8 @@ public class ControllerServlet extends HttpServlet {
         String jdbcPassword = getServletContext().getInitParameter("jdbcPassword");
  
         userDao = new UserDao(jdbcURL, jdbcUsername, jdbcPassword);
- 
+        questionDao= new QuestionDao(jdbcURL, jdbcUsername, jdbcPassword);
+        videoDao=new VideoDao(jdbcURL, jdbcUsername, jdbcPassword);
     }
  
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -60,11 +63,26 @@ public class ControllerServlet extends HttpServlet {
             case "/initializeDB":
             	initializeDB(request, response);
             	break;
+            case "/postQuestion":
+            	postQuestion(request, response);
+            	break;
+            case "/listQuestions":
+            	listQuestions(request, response);
+            	break;
+            case "/postVideo":
+            	postVideo(request, response);
+            	break;
+            case "/listVideos":
+            	listVideos(request, response);
+            	break;
+            	
             }
         } catch (SQLException ex) {
             throw new ServletException(ex);
         }
     }
+
+
 
 
 	private void showNewForm(HttpServletRequest request, HttpServletResponse response)
@@ -116,9 +134,11 @@ public class ControllerServlet extends HttpServlet {
             	response.sendRedirect("InitializeDB.jsp");            	         
         	}
         	else {        	
-        		
-        		System.out.println("Logined as a normal user successfully");
-            	response.sendRedirect("Logined.jsp");
+        		System.out.println("Logined as a normal user successfully");        	        
+        	    RequestDispatcher dispatcher = request.getRequestDispatcher("PostQuestion.jsp");
+        	    System.out.println("logined username is +++++++"+session.getAttribute("loginUsername"));
+        	    request.setAttribute("username", session.getAttribute("loginUsername"));
+        	    dispatcher.forward(request, response);
         	}   
         	}
         else {
@@ -134,7 +154,60 @@ public class ControllerServlet extends HttpServlet {
  			 RequestDispatcher dispatcher = request.getRequestDispatcher("Success.jsp");
  	        dispatcher.forward(request, response);
  		}
- 		
  	}
+    
+
+	private void postQuestion(HttpServletRequest request, HttpServletResponse response) throws SQLException, ServletException, IOException {
+		System.out.println("Post Question");
+		HttpSession session=request.getSession(false);
+		String username=(String) session.getAttribute("loginUsername");
+		String question=request.getParameter("question");
+		long millis=System.currentTimeMillis();  
+		java.sql.Date date=new java.sql.Date(millis);
+		System.out.println(username);
+		System.out.println(question);
+		System.out.println(date);
+		
+		Question que=new Question(question, username, date);
+		questionDao.postQuestion(que);
+		
+		response.sendRedirect("listQuestions");
+		
+	}
+	
+	private void listQuestions(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, IOException, ServletException {
+        List<Question> listQuestions = questionDao.listAllQuestions();
+        								
+        request.setAttribute("listQuestions", listQuestions);
+        RequestDispatcher dispatcher = request.getRequestDispatcher("ListQuestions.jsp");
+        dispatcher.forward(request, response);
+    }
+	
+	private void postVideo(HttpServletRequest request, HttpServletResponse response) throws SQLException, ServletException, IOException {
+		System.out.println("Post Video");
+		HttpSession session=request.getSession(false);
+		String username=(String) session.getAttribute("loginUsername");
+		String url=request.getParameter("url");
+		String title=request.getParameter("title");
+		String des=request.getParameter("des");
+		long millis=System.currentTimeMillis();  
+		java.sql.Date postDate=new java.sql.Date(millis);
+		System.out.println(username);
+		System.out.println(url);
+		System.out.println(postDate);
+		
+		Video video=new Video(url, title,des, username,qid, postDate);
+		videoDao.postVideo(video);
+		
+		response.sendRedirect("listVideos");
+		
+	}
+	
+
+	private void listVideos(HttpServletRequest request, HttpServletResponse response) {
+		// TODO Auto-generated method stub
+		
+	}
  
 }
