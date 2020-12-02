@@ -26,6 +26,7 @@ public class ControllerServlet extends HttpServlet {
     private UserDao userDao;
     private QuestionDao questionDao;
     private VideoDao videoDao;
+    private TagDao tagDao;
     private HttpSession session=null;
     
     public void init() {
@@ -36,6 +37,7 @@ public class ControllerServlet extends HttpServlet {
         userDao = new UserDao(jdbcURL, jdbcUsername, jdbcPassword);
         questionDao= new QuestionDao(jdbcURL, jdbcUsername, jdbcPassword);
         videoDao=new VideoDao(jdbcURL, jdbcUsername, jdbcPassword);
+        tagDao=new TagDao(jdbcURL, jdbcUsername, jdbcPassword);
     }
  
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -69,6 +71,9 @@ public class ControllerServlet extends HttpServlet {
             case "/listQuestions":
             	listQuestions(request, response);
             	break;
+            case "/showPostForm":
+            	showPostForm(request, response);
+            	break;
             case "/postVideo":
             	postVideo(request, response);
             	break;
@@ -81,6 +86,7 @@ public class ControllerServlet extends HttpServlet {
             throw new ServletException(ex);
         }
     }
+
 
 
 
@@ -102,7 +108,7 @@ public class ControllerServlet extends HttpServlet {
  
         User newUser = new User(username, password, firstName, lastName, age);
         userDao.insertUser(newUser);
-        response.sendRedirect("Registered.jsp");
+        response.sendRedirect("Login.jsp");
     }
     
     private void validateUser(HttpServletRequest request, HttpServletResponse response) 
@@ -184,8 +190,22 @@ public class ControllerServlet extends HttpServlet {
         dispatcher.forward(request, response);
     }
 	
+
+	private void showPostForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
+		
+		int qid=Integer.parseInt(request.getParameter("qid"));
+		System.out.println("qid: "+qid);
+		Question newquestion=questionDao.getQuestion(qid);
+		request.setAttribute("question", newquestion);
+		
+		RequestDispatcher dispatcher = request.getRequestDispatcher("PostVideo.jsp");
+        dispatcher.forward(request, response);
+	}
+	
 	private void postVideo(HttpServletRequest request, HttpServletResponse response) throws SQLException, ServletException, IOException {
 		System.out.println("Post Video");
+		
+		int qid=Integer.parseInt(request.getParameter("qid"));
 		HttpSession session=request.getSession(false);
 		String username=(String) session.getAttribute("loginUsername");
 		String url=request.getParameter("url");
@@ -193,21 +213,35 @@ public class ControllerServlet extends HttpServlet {
 		String des=request.getParameter("des");
 		long millis=System.currentTimeMillis();  
 		java.sql.Date postDate=new java.sql.Date(millis);
-		System.out.println(username);
-		System.out.println(url);
-		System.out.println(postDate);
+		String tag=request.getParameter("tags");
 		
-		Video video=new Video(url, title,des, username,qid, postDate);
+		System.out.println(username);
+		System.out.println("url: "+url);
+		System.out.println("title: "+ title);
+		System.out.println("des: "+des);
+		System.out.println(postDate);
+		System.out.println("tags: "+tag);
+		
+		Video video=new Video(url, title,des, qid, username, postDate);
 		videoDao.postVideo(video);
 		
+		Tag tagObj=new Tag(qid,tag);
+		tagDao.insertTag(tagObj);
+		
 		response.sendRedirect("listVideos");
+		
 		
 	}
 	
 
-	private void listVideos(HttpServletRequest request, HttpServletResponse response) {
-		// TODO Auto-generated method stub
+	private void listVideos(HttpServletRequest request, HttpServletResponse response) throws SQLException, ServletException, IOException {
+		List<Video> listVideos = videoDao.listAllVideos();
+		List<Question> listQuestions = questionDao.listAllQuestions();
 		
+        request.setAttribute("listQuestions", listQuestions);
+        request.setAttribute("listVideos", listVideos);
+        RequestDispatcher dispatcher = request.getRequestDispatcher("ListVideos.jsp");
+        dispatcher.forward(request, response);
 	}
  
 }

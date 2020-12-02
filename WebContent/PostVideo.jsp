@@ -18,11 +18,17 @@
 
 	    <tr>
              <td colspan="2" align="right">
-              <c:out value='${username}' />
+              <c:out value='${question.username}' />
              </td>
         </tr>
 
-	         
+	        <c:if test="${question !=null}">
+                    <input type="hidden" name="qid" size="45" value="<c:out value='${question.qid}'  />"
+                            
+                        />
+           
+              </c:if>
+           
 
             <tr>
                 <th>Url: </th>

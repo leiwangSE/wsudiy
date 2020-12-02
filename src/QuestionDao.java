@@ -64,7 +64,7 @@ public class QuestionDao {
         System.out.println("AskDate: " +que.getAskDate());
         
         boolean rowInserted = statement.executeUpdate() > 0;
-        System.out.println("Inserted:"+rowInserted);
+        System.out.println("Inserted a question:"+rowInserted);
         statement.close();
         disconnect();
         return rowInserted;
@@ -97,6 +97,32 @@ public class QuestionDao {
          
         return listQuestions;
     }
+	public Question getQuestion(int qid) throws SQLException {
+		
+	        Question que = null;
+	        String sql = "SELECT * FROM questions WHERE qid = ?";
+	         
+	        connect();
+	         
+	        PreparedStatement statement = jdbcConnection.prepareStatement(sql);
+	        statement.setInt(1, qid);
+	         
+	        ResultSet resultSet = statement.executeQuery();
+	         
+	        if (resultSet.next()) {
+	            String question = resultSet.getString("Question");
+	            String username = resultSet.getString("Username");
+	            Date askDate = resultSet.getDate("Askdate");
+	            System.out.println("question: "+question);
+	            que = new Question(qid, question, username, askDate);
+	        }
+	         
+	        resultSet.close();
+	        statement.close();
+	         
+	        return que;
+	    
+	}
     
     
     

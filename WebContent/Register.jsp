@@ -3,15 +3,16 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
 <head>
-    <title>Registration Application</title>
+    <title>WSUDIY-Register</title>
 </head>
 <body>
     <center>
+    <br>
         <h1>WSUDIY</h1>
       
     </center>
     <div align="center">
-        <c:if test="${student1 != null}">
+        <c:if test="${user != null}">
             <form action="update" method="post">
         </c:if>
         <c:if test="${user == null}">

@@ -5,24 +5,28 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<title>DIY Video</title>
+<title>WSUDIY-Login</title>
 <style>
 
 </style>
 </head>
 <body>
+<center>
 <br>
+        <h1>WSUDIY</h1>
+      
+    </center>
 <div align="center">
     <form action="login" method="post">
         
        
         <table border="1" cellpadding="5">
             <caption>
-                <h1>
+                <h2>
                    
-                        Login User
+                        Login 
                    
-                </h1>
+                </h2>
             </caption>
                         
             <tr>
@@ -50,7 +54,7 @@
         </table>
         
         </form>
-        <p style="font-size:20px;">If you don't have an account, please click <a href="Registration.jsp">here</a></p>
+        <p style="font-size:20px;">If you don't have an account, please click <a href="Register.jsp">here</a></p>
 </div>
 <br>
 

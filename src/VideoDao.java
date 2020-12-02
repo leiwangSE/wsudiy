@@ -66,7 +66,7 @@ public class VideoDao {
         
         
         boolean rowInserted = statement.executeUpdate() > 0;
-        System.out.println("Inserted:"+rowInserted);
+        System.out.println("Inserted a video:"+rowInserted);
         statement.close();
         disconnect();
         return rowInserted;
@@ -103,5 +103,36 @@ public class VideoDao {
          
         return listVideos;
     }
+    
+	public List<Video> listAllVideos() throws SQLException {
+		 List<Video> listVideos = new ArrayList<>();
+         
+	        String sql = "SELECT * FROM videos";
+	         
+	        connect();
+	         
+	        Statement statement = jdbcConnection.createStatement();
+	        ResultSet resultSet = statement.executeQuery(sql);
+	         
+	        while (resultSet.next()) {
+	           
+	            String url = resultSet.getString("Url");
+	            String title = resultSet.getString("Title");
+	            String des = resultSet.getString("Des");
+	            int qid=resultSet.getInt("Qid");
+	            String username=resultSet.getString("Username");
+	            Date postDate =resultSet.getDate("Postdate");
+	            
+	            Video video=new Video(url,title,des,qid,username,postDate);
+	            listVideos.add(video);
+	        }
+	         
+	        resultSet.close();
+	        statement.close();
+	         
+	        disconnect();
+	         
+	        return listVideos;
+	}
     
 }

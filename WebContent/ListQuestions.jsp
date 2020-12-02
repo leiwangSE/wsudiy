@@ -3,11 +3,11 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
 <head>
-    <title>My Questions</title>
+    <title>List all Questions</title>
 </head>
 <body>
     <center>
-        <h1>Questions Management</h1>
+        <h1>Questions Board</h1>
         <h2>
             <a href="PostQuestion.jsp">Post a New Question</a>
             &nbsp;&nbsp;&nbsp;
@@ -27,9 +27,8 @@
                     <td><c:out value="${que.question}" /></td>
                     <td><c:out value="${que.askDate}" /></td>
                     <td>
-                        <a href="edit?id=<c:out value='${que.qid}' />">Edit</a>
-                        &nbsp;&nbsp;&nbsp;&nbsp;
-                        <a href="delete?id=<c:out value='${que.qid}' />">Delete</a>                     
+                        <a href="showPostForm?qid=<c:out value='${que.qid}' />">Reply</a>
+                                        
                     </td>
                 </tr>
             </c:forEach>
