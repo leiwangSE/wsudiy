@@ -124,6 +124,21 @@ public class QuestionDao {
 	    
 	}
     
+	public int getQid() throws SQLException {
+		int nextID = 0;
+		String sql="select max(qid) from questions";
+		connect();
+		
+		Statement statement = jdbcConnection.createStatement();
+        ResultSet resultSet = statement.executeQuery(sql);
+        
+        if(resultSet.next()) {
+        	 nextID = resultSet.getInt("max(qid)")+1;
+        }
+        System.out.println("nextID: "+nextID);
+		return nextID;
+		
+	}
     
     
 }

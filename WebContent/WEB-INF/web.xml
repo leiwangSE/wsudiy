@@ -20,6 +20,11 @@
         <param-name>jdbcPassword</param-name>
         <param-value>pass1234</param-value>
     </context-param>
+    
+    <context-param>
+        <param-name>autoReconnect</param-name>
+        <param-value>true</param-value>
+    </context-param>
  
     <servlet>
         <servlet-name>ControllerServlet</servlet-name>

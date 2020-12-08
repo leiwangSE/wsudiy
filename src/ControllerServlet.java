@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import java.util.Arrays;
 
  
 /**
@@ -27,6 +28,7 @@ public class ControllerServlet extends HttpServlet {
     private QuestionDao questionDao;
     private VideoDao videoDao;
     private TagDao tagDao;
+    private FavoriteDao favoriteDao;
     private HttpSession session=null;
     
     public void init() {
@@ -38,6 +40,7 @@ public class ControllerServlet extends HttpServlet {
         questionDao= new QuestionDao(jdbcURL, jdbcUsername, jdbcPassword);
         videoDao=new VideoDao(jdbcURL, jdbcUsername, jdbcPassword);
         tagDao=new TagDao(jdbcURL, jdbcUsername, jdbcPassword);
+        favoriteDao=new FavoriteDao(jdbcURL, jdbcUsername, jdbcPassword);
     }
  
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -80,7 +83,14 @@ public class ControllerServlet extends HttpServlet {
             case "/listVideos":
             	listVideos(request, response);
             	break;
-            	
+            case "/listAllQsandVs":
+            	listAllQsandVs(request, response);
+            	break;
+            case "/player":
+            	playVideo(request,response);
+            	break;
+            case "/favorite":
+            	addFavorite(request,response);
             }
         } catch (SQLException ex) {
             throw new ServletException(ex);
@@ -89,7 +99,7 @@ public class ControllerServlet extends HttpServlet {
 
 
 
-
+	
 
 	private void showNewForm(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -143,6 +153,7 @@ public class ControllerServlet extends HttpServlet {
         		System.out.println("Logined as a normal user successfully");        	        
         	    RequestDispatcher dispatcher = request.getRequestDispatcher("PostQuestion.jsp");
         	    System.out.println("logined username is +++++++"+session.getAttribute("loginUsername"));
+        	    System.out.println("session id:"+session.getId());
         	    request.setAttribute("username", session.getAttribute("loginUsername"));
         	    dispatcher.forward(request, response);
         	}   
@@ -165,17 +176,30 @@ public class ControllerServlet extends HttpServlet {
 
 	private void postQuestion(HttpServletRequest request, HttpServletResponse response) throws SQLException, ServletException, IOException {
 		System.out.println("Post Question");
+		int qid=questionDao.getQid();
 		HttpSession session=request.getSession(false);
 		String username=(String) session.getAttribute("loginUsername");
 		String question=request.getParameter("question");
 		long millis=System.currentTimeMillis();  
 		java.sql.Date date=new java.sql.Date(millis);
+		String tag=request.getParameter("tags");
+		String [] tagsArray=null;
+		
+		tagsArray=tag.split(",");
+		
 		System.out.println(username);
 		System.out.println(question);
 		System.out.println(date);
+		System.out.println(Arrays.toString(tagsArray));
 		
 		Question que=new Question(question, username, date);
 		questionDao.postQuestion(que);
+		
+		
+		
+		Tag tagObj=new Tag(qid,tagsArray);
+		tagDao.insertTag(tagObj);
+		
 		
 		response.sendRedirect("listQuestions");
 		
@@ -213,20 +237,18 @@ public class ControllerServlet extends HttpServlet {
 		String des=request.getParameter("des");
 		long millis=System.currentTimeMillis();  
 		java.sql.Date postDate=new java.sql.Date(millis);
-		String tag=request.getParameter("tags");
+		
 		
 		System.out.println(username);
 		System.out.println("url: "+url);
 		System.out.println("title: "+ title);
 		System.out.println("des: "+des);
 		System.out.println(postDate);
-		System.out.println("tags: "+tag);
+		
 		
 		Video video=new Video(url, title,des, qid, username, postDate);
 		videoDao.postVideo(video);
 		
-		Tag tagObj=new Tag(qid,tag);
-		tagDao.insertTag(tagObj);
 		
 		response.sendRedirect("listVideos");
 		
@@ -238,10 +260,52 @@ public class ControllerServlet extends HttpServlet {
 		List<Video> listVideos = videoDao.listAllVideos();
 		List<Question> listQuestions = questionDao.listAllQuestions();
 		
+		int lastQid=listQuestions.get(listQuestions.size()-1).getQid();
+		
         request.setAttribute("listQuestions", listQuestions);
         request.setAttribute("listVideos", listVideos);
+        request.setAttribute("lastQid", lastQid);
         RequestDispatcher dispatcher = request.getRequestDispatcher("ListVideos.jsp");
         dispatcher.forward(request, response);
 	}
+	
+	private void listAllQsandVs(HttpServletRequest request, HttpServletResponse response) throws SQLException, ServletException, IOException {
+		List<Video> listVideos = videoDao.listAllVideos();
+		List<Question> listQuestions = questionDao.listAllQuestions();
+		
+		
+        request.setAttribute("listQuestions", listQuestions);
+        request.setAttribute("listVideos", listVideos);
+        RequestDispatcher dispatcher = request.getRequestDispatcher("ListAllQsandVs.jsp");
+        dispatcher.forward(request, response);
+		
+	}
+	private void playVideo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		HttpSession session=request.getSession(false);
+		String username=(String) session.getAttribute("loginUsername");
+		System.out.println("id:"+session.getId());
+		
+		String url=request.getParameter("url");
+		String suburl=url.substring(17);
+		System.out.println("suburl:"+suburl);
+		RequestDispatcher dispatcher=request.getRequestDispatcher("Player.jsp");
+		request.setAttribute("username", username);
+		System.out.println("username:"+username);
+		request.setAttribute("suburl", suburl);
+		request.setAttribute("url", url);
+		dispatcher.forward(request, response);
+		
+	}
  
+	private void addFavorite(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
+		String username=request.getParameter("username");
+		String url=request.getParameter("url");
+	    
+		Favorite favorite=new Favorite(url, username);
+		favoriteDao.insertFavorite(favorite);
+		
+        response.sendRedirect("MyFavorites.jsp");;
+		
+	}
+	
 }

@@ -8,13 +8,13 @@
 <body>
     <center>
         <h1>List of Videos</h1>
-        <p><a href="listAllQsandVs">List all questions and corresponding videos</a></p>
+      
     </center>
     <div class="container" align="center" style="position:relative; margin-top:0 px; ">
-    <h2 align="center">Relied question and corresponding videos</h2>
+    <h2 align="center">Questions and Videos</h2>
         <table border="1" cellpadding="5" style="position:relative; margin-top:0 px;">
             <c:forEach var="que" items="${listQuestions}">
-           <c:if test="${que.qid==lastQid}">
+           
             <tr>
             <th><c:out value="${que.question}" /></th>
             </tr>
@@ -33,7 +33,7 @@
                 </tr>
                 </c:if>
                 </c:forEach>
-             </c:if>
+             
             </c:forEach>
         </table>
     </div>   

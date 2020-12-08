@@ -18,13 +18,13 @@ import java.util.List;
  *
  */
 
-public class TagDao {
+public class FavoriteDao {
 	private String jdbcURL;
     private String jdbcUsername;
     private String jdbcPassword;
     private Connection jdbcConnection;
      
-    public TagDao(String jdbcURL, String jdbcUsername, String jdbcPassword) {
+    public FavoriteDao(String jdbcURL, String jdbcUsername, String jdbcPassword) {
         this.jdbcURL = jdbcURL;
         this.jdbcUsername = jdbcUsername;
         this.jdbcPassword = jdbcPassword;
@@ -50,29 +50,26 @@ public class TagDao {
         }
     }
      //prepareStatement allows to issue SQL query to DB
-    public boolean insertTag(Tag tag) throws SQLException {
-    	System.out.println("Call insetTag");
+    public boolean insertFavorite(Favorite favorite) throws SQLException {
+    	System.out.println("Call insetFavorite");
     	boolean rowInserted = false;
-    	boolean insertedTag = true;
-        String sql = "INSERT INTO wsudiy.tags (Qid, Tag) VALUES (?, ?)";
+        String sql = "INSERT INTO wsudiy.favorites (Url, Username) VALUES (?, ?)";
         connect();
-        for(String i:tag.getTag()) {
+       
         PreparedStatement statement = jdbcConnection.prepareStatement(sql);
-        statement.setInt(1, tag.getQid());
-        statement.setString(2, i);
+        statement.setString(1, favorite.getUrl());
+        statement.setString(2, favorite.getUsername());
         System.out.println("Sql script: "+sql);
-        System.out.println("Qid: "+tag.getQid());
-        System.out.println("Tag: "+ i);
+        System.out.println("Url: "+favorite.getUrl());
+        System.out.println("Username: "+ favorite.getUsername());
         
         rowInserted = statement.executeUpdate() > 0;
         System.out.println("Inserted:"+rowInserted);
         
         statement.close();
-        
-        insertedTag=insertedTag&&rowInserted;
-    }
+
         disconnect();
-		return insertedTag;
+		return rowInserted;
     
    
     } 

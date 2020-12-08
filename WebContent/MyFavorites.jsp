@@ -3,29 +3,23 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
 <head>
-    <title>List all Questions</title>
+    <title>List all My Favorites</title>
 </head>
 <body>
     <center>
-        <h1>Questions Board</h1>
-        <h2>
-            <a href="login">Post a New Question</a>
-            &nbsp;&nbsp;&nbsp;
-            <a href="listQuestions">List All Questions</a>
-             
-        </h2>
+        <h1>My Favorites</h1>
     </center>
     <div align="center">
         <table border="1" cellpadding="5">
-            <caption><h2>List of Questions</h2></caption>
+            <caption><h2>List of My Favorites</h2></caption>
             <tr>
-                <th>Questions</th>
-                <th>Ask Date</th>
+                <th>Title</th>
+                <th>Url</th>
             </tr>
-            <c:forEach var="que" items="${listQuestions}">
+            <c:forEach var="fav" items="${listFavorites}">
                 <tr>
-                    <td><a href="listVideos"><c:out value="${que.question}" /></a></td>
-                    <td><c:out value="${que.askDate}" /></td>
+                    <td><c:out value="${fav.title}" /></td>
+                    <td><c:out value="${fav.url}" /></td>
                     <td>
                         <a href="showPostForm?qid=<c:out value='${que.qid}' />">Reply</a>
                                         
